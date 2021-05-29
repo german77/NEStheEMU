@@ -46,11 +46,27 @@ void CPU::WriteMemoryU16(const u16 address, const u16 data) {
 	WriteMemory(address, data >> 8);
 }
 
-void CPU::LDA_immediate() {
-	register_a = ReadMemory(program_counter++);
+u16 CPU::GetOperandAddress(AddressingMode mode) const {
+	switch (mode) {
+	case AddressingMode::Immediate:
+		return program_counter;
+	case AddressingMode::ZeroPage:
+		return ReadMemory(program_counter);
+	case AddressingMode::Absolute:
+		return ReadMemoryU16(program_counter);
+	default:
+		std::printf("LDA mode not implemmented %02x\n", static_cast<u8>(mode));
+		return 0;
+	}
+}
+
+void CPU::LDA(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+
+	register_a = ReadMemory(addr);
 	status.zero.Assign(register_a == 0);
 	status.negative.Assign((register_a & 0x80) != 0);
-	std::printf("LDA_I %02x\n", register_a);
+	std::printf("LDA %02x\n", register_a);
 }
 
 void CPU::TAX() {

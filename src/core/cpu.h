@@ -4,6 +4,7 @@
 #include <vector>
 #include "../common/common_types.h"
 #include "../common/bit_field.h"
+#include "commands.h"
 
 struct CpuFlag {
 	union {
@@ -32,12 +33,14 @@ public:
 	void WriteMemory(const u16 address, const u8 data);
 	void WriteMemoryU16(const u16 address, const u16 data);
 
-	void LDA_immediate();
+	void LDA(AddressingMode mode);
 	void TAX();
 	void INX();
 	void BRK();
 
 private:
+	u16 GetOperandAddress(AddressingMode mode) const;
+
 	u8 register_a{};
 	u8 register_x{};
 	u8 register_y{};

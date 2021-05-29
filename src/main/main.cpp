@@ -10,8 +10,18 @@ int main() {
 		const Opcode opcode = getOpcode();
 		cpu.IncrementCounter();
 		switch (opcode) {
-		case Opcode::LDA_I:
-			cpu.LDA_immediate();
+		case Opcode::LDA_IMM:
+			cpu.LDA(AddressingMode::Immediate);
+			cpu.IncrementCounter();
+			break;
+		case Opcode::LDA_ZP:
+			cpu.LDA(AddressingMode::ZeroPage);
+			cpu.IncrementCounter();
+			break;
+		case Opcode::LDA_ABS:
+			cpu.LDA(AddressingMode::Absolute);
+			cpu.IncrementCounter();
+			cpu.IncrementCounter();
 			break;
 		case Opcode::TAX:
 			cpu.TAX();
