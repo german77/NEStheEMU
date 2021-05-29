@@ -36,13 +36,32 @@ public:
 
 	void BRK(AddressingMode mode);
 	bool JSR(AddressingMode mode);
+	bool RTS(AddressingMode mode);
 	bool JMP(AddressingMode mode);
+
+	bool BCC(AddressingMode mode);
+	bool BCS(AddressingMode mode);
+	bool BEQ(AddressingMode mode);
+	bool BMI(AddressingMode mode);
 	bool BNE(AddressingMode mode);
+	bool BPL(AddressingMode mode);
+	bool BVC(AddressingMode mode);
+	bool BVS(AddressingMode mode);
+
+	void CLC(AddressingMode mode);
+	void CLD(AddressingMode mode);
+	void CLI(AddressingMode mode);
+	void CLV(AddressingMode mode);
 
 	void TXA(AddressingMode mode);
 	void TAX(AddressingMode mode);
 	void PHA(AddressingMode mode);
 	void PLA(AddressingMode mode);
+	void BIT(AddressingMode mode);
+
+	void LSR(AddressingMode mode);
+
+	void ADC(AddressingMode mode);
 
 	void LDA(AddressingMode mode);
 	void LDX(AddressingMode mode);
@@ -50,9 +69,15 @@ public:
 
 	void STA(AddressingMode mode);
 
+	void DEX(AddressingMode mode);
+	void DEY(AddressingMode mode);
+	void INC(AddressingMode mode);
 	void INX(AddressingMode mode);
 	void INY(AddressingMode mode);
 
+	void AND(AddressingMode mode);
+
+	void CMP(AddressingMode mode);
 	void CPX(AddressingMode mode);
 	void CPY(AddressingMode mode);
 
