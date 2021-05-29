@@ -5,6 +5,14 @@ bool CPU::IsRunning() const {
 	return status.break_cmd == 0;
 }
 
+void CPU::Reset() {
+	register_a = 0;
+	register_x = 0;
+	register_y = 0;
+	status.raw = 0;
+	program_counter = 0xFFFC;
+}
+
 u16 CPU::GetCounter() const {
 	return program_counter;
 }
@@ -13,8 +21,19 @@ u16 CPU::IncrementCounter() {
 	return program_counter++;
 }
 
+void CPU::LoadProgram(const std::vector<u8>& program) {
+	std::copy_n(program.begin(), program.size(), memory.begin() + 0x8000);
+	WriteMemoryU16(0xFFFC, 0x8000);
+}
+
 u8 CPU::ReadMemory(const u16 address) const {
 	return memory[address];
+}
+
+u16 CPU::ReadMemoryU16(const u16 address) const {
+	u16 lo = ReadMemory(address);
+	u16 hi = ReadMemory(address + 1) << 8;
+	return hi | lo;
 }
 
 void CPU::WriteMemory(const u16 address, const u8 data) {
@@ -22,10 +41,9 @@ void CPU::WriteMemory(const u16 address, const u8 data) {
 	return;
 }
 
-void CPU::LoadProgram(const std::vector<u8>& program) {
-	std::copy_n(program.begin(), program.size(), memory.begin() + 0x8000);
-	program_counter = 0x8000;
-	return;
+void CPU::WriteMemoryU16(const u16 address, const u16 data) {
+	WriteMemory(address, data & 0xFF);
+	WriteMemory(address, data >> 8);
 }
 
 void CPU::LDA_immediate() {
@@ -33,7 +51,6 @@ void CPU::LDA_immediate() {
 	status.zero.Assign(register_a == 0);
 	status.negative.Assign((register_a & 0x80) != 0);
 	std::printf("LDA_I %02x\n", register_a);
-	return;
 }
 
 void CPU::TAX() {
@@ -41,7 +58,6 @@ void CPU::TAX() {
 	status.zero.Assign(register_x == 0);
 	status.negative.Assign((register_x & 0x80) != 0);
 	std::printf("TAX\n");
-	return;
 }
 
 void CPU::INX() {
@@ -49,11 +65,9 @@ void CPU::INX() {
 	status.zero.Assign(register_x == 0);
 	status.negative.Assign((register_x & 0x80) != 0);
 	std::printf("INX\n");
-	return;
 }
 
 void CPU::BRK() {
 	status.break_cmd.Assign(1);
 	std::printf("BRK\n");
-	return;
 }

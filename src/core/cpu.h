@@ -22,11 +22,15 @@ struct CpuFlag {
 class CPU {
 public:
 	bool IsRunning() const;
+	void Reset();
 	u16 GetCounter() const;
 	u16 IncrementCounter();
-	u8 ReadMemory(const u16 address) const;
-	void WriteMemory(const u16 address, const u8 data);
 	void LoadProgram(const std::vector<u8>& program);
+
+	u8 ReadMemory(const u16 address) const;
+	u16 ReadMemoryU16(const u16 address) const;
+	void WriteMemory(const u16 address, const u8 data);
+	void WriteMemoryU16(const u16 address, const u16 data);
 
 	void LDA_immediate();
 	void TAX();
