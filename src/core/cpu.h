@@ -15,8 +15,8 @@ struct CpuFlag {
 		BitField<2, 1, u8> interrupt;
 		BitField<3, 1, u8> decimal;
 		BitField<4, 1, u8> break_cmd;
-		BitField<5, 1, u8> overflow;
-		BitField<6, 1, u8> negative;
+		BitField<6, 1, u8> overflow;
+		BitField<7, 1, u8> negative;
 	};
 };
 
@@ -24,6 +24,7 @@ class CPU {
 public:
 	bool IsRunning() const;
 	void Reset();
+	void PrintStatus();
 	u16 GetCounter() const;
 	u16 IncrementCounter(u8 times);
 	void LoadProgram(const std::vector<u8>& program);
@@ -34,15 +35,26 @@ public:
 	void WriteMemoryU16(const u16 address, const u16 data);
 
 	void BRK(AddressingMode mode);
-	void JSR(AddressingMode mode);
-	void JMP(AddressingMode mode);
+	bool JSR(AddressingMode mode);
+	bool JMP(AddressingMode mode);
+	bool BNE(AddressingMode mode);
+
 	void TXA(AddressingMode mode);
 	void TAX(AddressingMode mode);
+	void PHA(AddressingMode mode);
+	void PLA(AddressingMode mode);
+
 	void LDA(AddressingMode mode);
 	void LDX(AddressingMode mode);
 	void LDY(AddressingMode mode);
+
 	void STA(AddressingMode mode);
+
 	void INX(AddressingMode mode);
+	void INY(AddressingMode mode);
+
+	void CPX(AddressingMode mode);
+	void CPY(AddressingMode mode);
 
 private:
 	u16 GetOperandAddress(AddressingMode mode) const;

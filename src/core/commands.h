@@ -103,9 +103,9 @@ const std::vector<CommandParameters> commands{
 	{Opcode::INX,     Function::INX, 0, 2, AddressingMode::NoneAddressing},
 	{Opcode::INY,     Function::INY, 0, 2, AddressingMode::NoneAddressing},
 	{Opcode::CPX_IMM, Function::CPX, 1, 2, AddressingMode::Immediate},
-	{Opcode::CPX_ZP,  Function::CPX, 1, 3, AddressingMode::Immediate},
-	{Opcode::CPX_ABS, Function::CPX, 2, 4, AddressingMode::Immediate},
+	{Opcode::CPX_ZP,  Function::CPX, 1, 3, AddressingMode::ZeroPage},
+	{Opcode::CPX_ABS, Function::CPX, 2, 4, AddressingMode::Absolute},
 	{Opcode::CPY_IMM, Function::CPY, 1, 2, AddressingMode::Immediate},
-	{Opcode::CPY_ZP,  Function::CPY, 1, 3, AddressingMode::Immediate},
-	{Opcode::CPY_ABS, Function::CPY, 2, 4, AddressingMode::Immediate},
+	{Opcode::CPY_ZP,  Function::CPY, 1, 3, AddressingMode::ZeroPage},
+	{Opcode::CPY_ABS, Function::CPY, 2, 4, AddressingMode::Absolute},
 };

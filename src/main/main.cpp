@@ -8,23 +8,34 @@ int main() {
 	cpu.LoadProgram(program);
 	cpu.Reset();
 	while (cpu.IsRunning()) {
+		cpu.PrintStatus();
 		const CommandParameters parameter = GetCommandParameters();
+		bool next = true;
 		cpu.IncrementCounter(1);
 		switch (parameter.function) {
 		case Function::BRK:
 			cpu.BRK(parameter.mode);
 			break;
 		case Function::JSR:
-			cpu.JSR(parameter.mode);
+			next=cpu.JSR(parameter.mode);
 			break;
 		case Function::JMP:
-			cpu.JMP(parameter.mode);
+			next = cpu.JMP(parameter.mode);
+			break;
+		case Function::BNE:
+			next = cpu.BNE(parameter.mode);
 			break;
 		case Function::TXA:
 			cpu.TXA(parameter.mode);
 			break;
 		case Function::TAX:
 			cpu.TAX(parameter.mode);
+			break;
+		case Function::PHA:
+			cpu.PHA(parameter.mode);
+			break;
+		case Function::PLA:
+			cpu.PLA(parameter.mode);
 			break;
 		case Function::LDA:
 			cpu.LDA(parameter.mode);
@@ -41,11 +52,21 @@ int main() {
 		case Function::INX:
 			cpu.INX(parameter.mode);
 			break;
+		case Function::INY:
+			cpu.INY(parameter.mode);
+			break;
+		case Function::CPX:
+			cpu.CPX(parameter.mode);
+			break;
+		case Function::CPY:
+			cpu.CPY(parameter.mode);
+			break;
 		default:
 			std::printf("Operation %02x not implemented\n", static_cast<u8>(parameter.opcode));
 			break;
 		}
-		cpu.IncrementCounter(parameter.parameters);
+			cpu.IncrementCounter(parameter.parameters);
+		
 
 	}
 	return 0;
