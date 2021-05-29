@@ -34,9 +34,13 @@ public:
 	void WriteMemoryU16(const u16 address, const u16 data);
 
 	void BRK(AddressingMode mode);
+	void JSR(AddressingMode mode);
 	void JMP(AddressingMode mode);
+	void TXA(AddressingMode mode);
 	void TAX(AddressingMode mode);
 	void LDA(AddressingMode mode);
+	void LDX(AddressingMode mode);
+	void LDY(AddressingMode mode);
 	void STA(AddressingMode mode);
 	void INX(AddressingMode mode);
 
@@ -49,4 +53,5 @@ private:
 	CpuFlag status{};
 	u16 program_counter{};
 	std::array<u8, 0xFFFF> memory{};
+	u8 stack_pointer;
 };

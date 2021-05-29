@@ -11,6 +11,7 @@ void CPU::Reset() {
 	register_y = 0;
 	status.raw = 0;
 	program_counter = 0x8000;
+	stack_pointer = 0;
 }
 
 u16 CPU::GetCounter() const {
@@ -73,10 +74,25 @@ void CPU::BRK(AddressingMode mode) {
 	std::printf("BRK\n");
 }
 
+void CPU::JSR(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+	stack_pointer++;
+	WriteMemoryU16(0xFFFC-(2* stack_pointer), program_counter);
+	program_counter = addr;
+	std::printf("JSR %04x %d\n", addr, stack_pointer);
+}
+
 void CPU::JMP(AddressingMode mode) {
 	const u16 addr = GetOperandAddress(mode);
 	program_counter = addr;
 	std::printf("JMP %04x\n", addr);
+}
+
+void CPU::TXA(AddressingMode mode) {
+	register_a = register_x;
+	status.zero.Assign(register_a == 0);
+	status.negative.Assign((register_a & 0x80) != 0);
+	std::printf("TXA\n");
 }
 
 void CPU::TAX(AddressingMode mode) {
@@ -93,6 +109,24 @@ void CPU::LDA(AddressingMode mode) {
 	status.zero.Assign(register_a == 0);
 	status.negative.Assign((register_a & 0x80) != 0);
 	std::printf("LDA %02x\n", register_a);
+}
+
+void CPU::LDX(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+
+	register_x = ReadMemory(addr);
+	status.zero.Assign(register_x == 0);
+	status.negative.Assign((register_x & 0x80) != 0);
+	std::printf("LDX %02x\n", register_x);
+}
+
+void CPU::LDY(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+
+	register_y = ReadMemory(addr);
+	status.zero.Assign(register_y == 0);
+	status.negative.Assign((register_y & 0x80) != 0);
+	std::printf("LDY %02x\n", register_y);
 }
 
 void CPU::STA(AddressingMode mode) {
