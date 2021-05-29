@@ -25,7 +25,7 @@ public:
 	bool IsRunning() const;
 	void Reset();
 	u16 GetCounter() const;
-	u16 IncrementCounter();
+	u16 IncrementCounter(u8 times);
 	void LoadProgram(const std::vector<u8>& program);
 
 	u8 ReadMemory(const u16 address) const;
@@ -33,10 +33,12 @@ public:
 	void WriteMemory(const u16 address, const u8 data);
 	void WriteMemoryU16(const u16 address, const u16 data);
 
+	void BRK(AddressingMode mode);
+	void JMP(AddressingMode mode);
+	void TAX(AddressingMode mode);
 	void LDA(AddressingMode mode);
-	void TAX();
-	void INX();
-	void BRK();
+	void STA(AddressingMode mode);
+	void INX(AddressingMode mode);
 
 private:
 	u16 GetOperandAddress(AddressingMode mode) const;

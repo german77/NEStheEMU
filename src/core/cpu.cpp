@@ -10,15 +10,15 @@ void CPU::Reset() {
 	register_x = 0;
 	register_y = 0;
 	status.raw = 0;
-	program_counter = 0xFFFC;
+	program_counter = 0x8000;
 }
 
 u16 CPU::GetCounter() const {
 	return program_counter;
 }
 
-u16 CPU::IncrementCounter() {
-	return program_counter++;
+u16 CPU::IncrementCounter(u8 times) {
+	return program_counter+= times;
 }
 
 void CPU::LoadProgram(const std::vector<u8>& program) {
@@ -52,12 +52,38 @@ u16 CPU::GetOperandAddress(AddressingMode mode) const {
 		return program_counter;
 	case AddressingMode::ZeroPage:
 		return ReadMemory(program_counter);
+	case AddressingMode::ZeroPage_X:
+		return (ReadMemory(program_counter) + register_x) && 0xFF;
+	case AddressingMode::ZeroPage_Y:
+		return (ReadMemory(program_counter) + register_y) && 0xFF;
 	case AddressingMode::Absolute:
 		return ReadMemoryU16(program_counter);
+	case AddressingMode::Absolute_X:
+		return ReadMemoryU16(program_counter) + register_x;
+	case AddressingMode::Absolute_Y:
+		return ReadMemoryU16(program_counter) + register_y;
 	default:
 		std::printf("LDA mode not implemmented %02x\n", static_cast<u8>(mode));
 		return 0;
 	}
+}
+
+void CPU::BRK(AddressingMode mode) {
+	status.break_cmd.Assign(1);
+	std::printf("BRK\n");
+}
+
+void CPU::JMP(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+	program_counter = addr;
+	std::printf("JMP %04x\n", addr);
+}
+
+void CPU::TAX(AddressingMode mode) {
+	register_x = register_a;
+	status.zero.Assign(register_x == 0);
+	status.negative.Assign((register_x & 0x80) != 0);
+	std::printf("TAX\n");
 }
 
 void CPU::LDA(AddressingMode mode) {
@@ -69,21 +95,16 @@ void CPU::LDA(AddressingMode mode) {
 	std::printf("LDA %02x\n", register_a);
 }
 
-void CPU::TAX() {
-	register_x = register_a;
-	status.zero.Assign(register_x == 0);
-	status.negative.Assign((register_x & 0x80) != 0);
-	std::printf("TAX\n");
+void CPU::STA(AddressingMode mode) {
+	const u16 addr = GetOperandAddress(mode);
+
+	WriteMemory(addr, register_a);
+	std::printf("STA %04x %02x\n", addr, register_a);
 }
 
-void CPU::INX() {
+void CPU::INX(AddressingMode mode) {
 	register_x++;
 	status.zero.Assign(register_x == 0);
 	status.negative.Assign((register_x & 0x80) != 0);
 	std::printf("INX\n");
-}
-
-void CPU::BRK() {
-	status.break_cmd.Assign(1);
-	std::printf("BRK\n");
 }

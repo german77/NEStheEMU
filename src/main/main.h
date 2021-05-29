@@ -5,6 +5,6 @@
 #include "../core/commands.h"
 #include "../common/common_types.h"
 
-Opcode getOpcode();
+const CommandParameters GetCommandParameters();
 
 CPU cpu{};
