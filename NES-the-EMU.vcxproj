@@ -18,6 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\cpu.cpp" />
+    <ClCompile Include="src\main\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common\bit_field.h" />
+    <ClInclude Include="src\common\common_funcs.h" />
+    <ClInclude Include="src\common\common_types.h" />
+    <ClInclude Include="src\common\swap.h" />
+    <ClInclude Include="src\core\commands.h" />
+    <ClInclude Include="src\core\cpu.h" />
+    <ClInclude Include="src\main\main.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -140,19 +153,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="src\bit_field.h" />
-    <ClInclude Include="src\commands.h" />
-    <ClInclude Include="src\common_funcs.h" />
-    <ClInclude Include="src\common_types.h" />
-    <ClInclude Include="src\cpu.h" />
-    <ClInclude Include="src\main.h" />
-    <ClInclude Include="src\swap.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\cpu.cpp" />
-    <ClCompile Include="src\main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

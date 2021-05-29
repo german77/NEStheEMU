@@ -2,8 +2,8 @@
 
 #include <array>
 #include <vector>
-#include "common_types.h"
-#include "bit_field.h"
+#include "../common/common_types.h"
+#include "../common/bit_field.h"
 
 struct CpuFlag {
 	union {

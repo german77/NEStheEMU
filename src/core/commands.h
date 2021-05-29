@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common_types.h"
+#include "../common/common_types.h"
 #include <string>
 
 enum class Opcode : u8 {
