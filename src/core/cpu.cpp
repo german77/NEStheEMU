@@ -82,15 +82,11 @@ u16 CPU::GetOperandAddress(AddressingMode mode) const {
 		return ReadMemoryU16(program_counter) + register_y;
 	case AddressingMode::Indirect_X:{
 		u16 base = (ReadMemory(program_counter) + register_x) && 0xFF;
-		u16 lo = ReadMemory(base);
-		u16 hi = ReadMemory(base + 1) << 8;
-		return hi | lo;
+		return ReadMemoryU16(base);
 	}
 	case AddressingMode::Indirect_Y: {
 		u16 base = (ReadMemory(program_counter) + register_y) && 0xFF;
-		u16 lo = ReadMemory(base);
-		u16 hi = ReadMemory(base + 1) << 8;
-		return hi | lo;
+		return ReadMemoryU16(base);
 	}
 	default:
 		std::printf("Address mode not implemmented %02x\n", static_cast<u8>(mode));
@@ -255,13 +251,15 @@ void CPU::PLA(AddressingMode mode) {
 
 void CPU::ADC(AddressingMode mode) {
 	const u16 addr = GetOperandAddress(mode);
-	u16 value = register_a + ReadMemory(addr);
+	const u8 data = ReadMemory(addr);
+	u16 value = register_a + data;
 	if (status.carry.Value() == 1) {
 		value++;
 	}
 	register_a = value;
 
-	status.overflow.Assign((value >> 8) != 0);
+	status.carry.Assign(value > 0xff);
+	status.overflow.Assign(((register_a ^ value) & (data ^ value) & 0x80 )!= 0);
 	status.zero.Assign(register_a == 0);
 	status.negative.Assign((register_a & 0x80) != 0);
 	std::printf("ADC 0x%02x\n", register_a);
@@ -360,10 +358,10 @@ void CPU::INY(AddressingMode mode) {
 
 void CPU::AND(AddressingMode mode) {
 	const u16 addr = GetOperandAddress(mode);
-	const u8 value = ReadMemory(addr)|register_a;
+	register_a &= ReadMemory(addr);
 
-	status.zero.Assign(value == 0);
-	status.negative.Assign((value & 0x80) != 0);
+	status.zero.Assign(register_a == 0);
+	status.negative.Assign((register_a & 0x80) != 0);
 	std::printf("AND\n");
 }
 

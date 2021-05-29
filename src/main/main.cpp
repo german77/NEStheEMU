@@ -21,17 +21,26 @@ std::vector<u8> program{ 0x20, 0x06, 0x06, 0x20, 0x38, 0x06, 0x20, 0x0d, 0x06, 0
 	0x1f, 0xc9, 0x1f, 0xf0, 0x01, 0x60, 0x4c, 0x35, 0x07, 0xa0, 0x00, 0xa5, 0xfe, 0x91, 0x00, 0x60,
 	0xa6, 0x03, 0xa9, 0x00, 0x81, 0x10, 0xa2, 0x00, 0xa9, 0x01, 0x81, 0x10, 0x60, 0xa2, 0x00, 0xea,
 	0xea, 0xca, 0xd0, 0xfb, 0x60 };
-
+//std::vector<u8> program{ 0xa2 , 0x00 , 0xa0 , 0x00 , 0x8a , 0x99 , 0x20 , 0x02 , 0x48 , 0xe8 , 0xc8, 0xc0, 0x10 , 0xd0 , 0xf5 , 0x68, 0x99 , 0x00 , 0x02 , 0xc8 , 0xc0 , 0x20 , 0xd0 , 0xf7 };
 int main(int argc, char* argv[]) {
 	InitializeSDL();
 	cpu.LoadProgram(program);
 	cpu.Reset();
+	int i = 0;
 	while (cpu.IsRunning()) {
+		//cpu.PrintStatus();
 		ExcecuteCode(); 
-		DrawWindow();
-		SDLEvents();
-		SDL_Delay(1);
+		if (i == 0) {
+			DrawWindow();
+			SDLEvents();
+			SDL_Delay(1);
+			i = 255;
+		}
+		if (i > 0) {
+			i--;
+		}
 	}
+	system("pause");
 
 	// Destroy the window. This will also destroy the surface
 	SDL_DestroyWindow(window);
@@ -43,18 +52,49 @@ int main(int argc, char* argv[]) {
 
 void SDLEvents() {
 	SDL_Event e;
+	u8 buttons = cpu.ReadMemory(0xFF);
 	while (SDL_PollEvent(&e) != 0) {
 		switch (e.type) {
 		case SDL_QUIT:
 			exit(0);
 		case SDL_KEYDOWN:
 			std::printf("KEY DOWn\n");
+			switch (e.key.keysym.sym) {
+			case SDLK_a:
+				buttons |= 0x8;
+				break;
+			case SDLK_d:
+				buttons |= 0x2;
+				break;
+			case SDLK_s:
+				buttons |= 0x4;
+				break;
+			case SDLK_w:
+				buttons |= 0x1;
+				break;
+			}
 			break;
 		case SDL_KEYUP:
 			std::printf("KEY UP\n");
+			switch (e.key.keysym.sym) {
+			case SDLK_a:
+				buttons &= 0xff - 0x8;
+				break;
+			case SDLK_d:
+				buttons &= 0xff -0x2;
+				break;
+			case SDLK_s:
+				buttons &= 0xff - 0x4;
+				break;
+			case SDLK_w:
+				buttons &= 0xff - 0x1;
+				break;
+			}
 			break;
 		}
 	}
+	cpu.WriteMemory(0xFF, buttons);
+	cpu.WriteMemory(0xFE, rand() % 256);
 }
 
 void DrawWindow() {
@@ -65,7 +105,7 @@ void DrawWindow() {
 			int r, g, b;
 			std::tie(r,g,b) = GetColor(pixel);
 			SDL_SetRenderDrawColor(renderer, r, g, b, 255); 
-			SDL_Rect pix = { x * 20, y * 20,20,20 };
+			SDL_Rect pix = { y * 20, x * 20,20,20 };
 			SDL_RenderFillRect(renderer, &pix);
 		}
 	}
@@ -75,13 +115,21 @@ std::tuple<u8, u8, u8> GetColor(u8 color) {
 	switch (color) {
 	case 0:return { 0,0,0 };
 	case 1:return { 255,255,255 };
-	case 2:return { 128,128,128 };
-	case 3:return { 255,0,0 };
-	case 4:return { 0,255,0 };
-	case 5:return { 0,0,255 };
-	case 6:return { 255,0,255 };
-	case 7:return { 255,255,0 };
-	default: return { 0,255,255 };
+	case 2:return { 136,0,0 };
+	case 3:return { 170,255,238 };
+	case 4:return { 204,68,204 };
+	case 5:return { 0,204,85 };
+	case 6:return { 0,0,170 };
+	case 7:return { 238,238,119 };
+	case 8:return { 221,136,85 };
+	case 9:return { 102,68,0 };
+	case 10:return { 255,119,199};
+	case 11:return { 51,51,51 };
+	case 12:return { 119,119,119 };
+	case 13:return { 170,255,102 };
+	case 14:return { 0,136,255 };
+	case 15:return { 187,187,187 };
+	default: return { 255,50,50 };
 	}
 }
 void ExcecuteCode() {
